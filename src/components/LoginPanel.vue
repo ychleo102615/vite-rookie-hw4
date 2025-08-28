@@ -1,11 +1,24 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 const userEmail = ref('')
 const userPassword = ref('')
 
-const login = () => {
+const isEmailEmpty = ref(false)
+
+const router = useRouter()
+
+const sendLoginRequest = () => {
   console.log('嘗試登入')
 }
+
+const gotoRegister = () => {
+  router.push({ name: 'register' })
+}
+
+watch(userEmail, (newEmail) => {
+  isEmailEmpty.value = newEmail === ''
+})
 </script>
 
 <template>
@@ -21,7 +34,7 @@ const login = () => {
       required
       v-model="userEmail"
     />
-    <span> {{ userEmail === '' ? '此欄位不可留空' : '' }}</span>
+    <span> {{ isEmailEmpty ? '此欄位不可留空' : '' }}</span>
     <label class="formControls_label" for="pwd">密碼</label>
     <input
       class="formControls_input"
@@ -34,11 +47,11 @@ const login = () => {
     />
     <button
       class="formControls_btnSubmit"
-      @click="login"
+      @click="sendLoginRequest"
       :disabled="userEmail === '' || userPassword === ''"
     >
       登入
     </button>
-    <a class="formControls_btnLink" href="#signUpPage">註冊帳號</a>
+    <button class="formControls_btnLink" @click="gotoRegister">註冊帳號</button>
   </div>
 </template>

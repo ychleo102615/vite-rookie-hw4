@@ -314,7 +314,8 @@ nav ul a span {
 .formControls .formControls_label {
   font-size: 0.875rem;
   font-weight: bold;
-  margin: 16px 0 4px 0;
+  /* margin: 16px 0 4px 0; */
+  margin: 0 0 4px 0;
 }
 
 .formControls .formControls_input {
@@ -382,11 +383,30 @@ nav ul a span {
 }
 
 .formControls .formControls_btnLink {
-  display: block;
+  display: inline; /* 或 inline-block */
   color: #333333;
   font-weight: bold;
-  text-decoration: none;
-  text-align: center;
+
+  /* 取消按鈕本身的樣式 */
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+
+  background: none; /* 移除 button 預設底色 */
+  border: none; /* 移除邊框 */
+  cursor: pointer; /* 維持手指游標 */
+  padding: 0; /* 移除額外間距 */
+  margin: 0 auto; /* 在 flex/column 中會自動置中 */
+}
+
+.formControls .formControls_btnLink:disabled {
+  color: #d87355;
+}
+
+.formControls .formControls_invalid_prompt {
+  color: #d87355;
+  text-align: right;
+  min-height: 1em;
 }
 
 .loginPage {
