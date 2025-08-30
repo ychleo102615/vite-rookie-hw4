@@ -8,7 +8,7 @@ const isEmailEmpty = ref(false)
 
 const router = useRouter()
 
-const sendLoginRequest = () => {
+const tryLogin = () => {
   console.log('嘗試登入')
 }
 
@@ -45,13 +45,7 @@ watch(userEmail, (newEmail) => {
       required
       v-model="userPassword"
     />
-    <button
-      class="formControls_btnSubmit"
-      @click="sendLoginRequest"
-      :disabled="userEmail === '' || userPassword === ''"
-    >
-      登入
-    </button>
+    <button class="formControls_btnSubmit" @click="tryLogin">登入</button>
     <button class="formControls_btnLink" @click="gotoRegister">註冊帳號</button>
   </div>
 </template>

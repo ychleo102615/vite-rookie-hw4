@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { registerUser } from '@/useCase/registerUseCase'
 
 const router = useRouter()
 
@@ -10,12 +11,17 @@ const registerPassword = ref('')
 const confirmPassword = ref('')
 
 // 預設狀態不顯示錯誤
-const isEmailCorrect = ref(true)
-const hasEnteredNickName = ref(true)
-const hasEnteredPassword = ref(true)
-const isPasswordSame = ref(true)
+let isEmailCorrect = true
+let hasEnteredNickName = true
+let hasEnteredPassword = true
+let isPasswordSame = true
 
-const canLogin = ref(false)
+const emailErrorMsg = ref('')
+const nickNameErrorMsg = ref('')
+const passwordErrorMsg = ref('')
+const confirmPasswordErrorMsg = ref('')
+
+const canOperate = ref(true)
 
 const tick = 10
 const threshold = 1000
@@ -23,7 +29,8 @@ const threshold = 1000
 let editEmailTimeHandle = null
 let editEmailElapsed = 0
 watch(registerEmail, () => {
-  isEmailCorrect.value = true
+  emailErrorMsg.value = ''
+
   editEmailElapsed = 0
   if (!editEmailTimeHandle) {
     editEmailTimeHandle = setInterval(() => {
@@ -31,24 +38,44 @@ watch(registerEmail, () => {
       if (editEmailElapsed >= threshold) {
         clearInterval(editEmailTimeHandle)
         editEmailTimeHandle = null
-        isEmailCorrect.value = validateEmail(registerEmail.value)
+        if (validateEmail(registerEmail.value)) {
+          isEmailCorrect = true
+          emailErrorMsg.value = ''
+        } else {
+          isEmailCorrect = false
+          emailErrorMsg.value = 'Email 格式不正確'
+        }
       }
     }, tick)
   }
 })
 
 watch(nickName, () => {
-  hasEnteredNickName.value = nickName.value !== ''
+  if (nickName.value === '') {
+    hasEnteredNickName = false
+    nickNameErrorMsg.value = '暱稱不可以為空'
+  } else {
+    hasEnteredNickName = true
+    nickNameErrorMsg.value = ''
+  }
 })
 
 watch(registerPassword, () => {
-  hasEnteredPassword.value = registerPassword.value !== ''
+  if (registerPassword.value === '') {
+    hasEnteredPassword = false
+    passwordErrorMsg.value = '密碼不可以為空'
+  } else {
+    hasEnteredPassword = true
+    passwordErrorMsg.value = ''
+  }
 })
 
 let editPasswordTimeHandle = null
 let editPasswordElapsed = 0
 watch(confirmPassword, () => {
-  isPasswordSame.value = true
+  isPasswordSame = true
+  confirmPasswordErrorMsg.value = ''
+
   editPasswordElapsed = 0
   if (!editPasswordTimeHandle) {
     editPasswordTimeHandle = setInterval(() => {
@@ -56,7 +83,8 @@ watch(confirmPassword, () => {
       if (editPasswordElapsed >= threshold) {
         clearInterval(editPasswordTimeHandle)
         editPasswordTimeHandle = null
-        isPasswordSame.value = confirmPassword.value === registerPassword.value
+        isPasswordSame = confirmPassword.value === registerPassword.value
+        confirmPasswordErrorMsg.value = isPasswordSame ? '' : '與密碼不符'
       }
     }, tick)
   }
@@ -67,34 +95,60 @@ const validateEmail = (email) => {
   return emailRegex.test(email)
 }
 
-const sendRegisterRequest = () => {
+const tryRegister = () => {
   let isFormValid = true
-  if (registerEmail.value === '' || !isEmailCorrect.value) {
-    isEmailCorrect.value = false
+  if (!isEmailCorrect) {
     isFormValid = false
   }
-  if (nickName.value === '') {
-    hasEnteredNickName.value = false
+  if (!hasEnteredNickName) {
     isFormValid = false
   }
-  if (registerPassword.value === '' || !hasEnteredPassword.value) {
-    hasEnteredPassword.value = false
+  if (!hasEnteredPassword) {
     isFormValid = false
   }
-  if (confirmPassword.value === '' || !isPasswordSame.value) {
-    isPasswordSame.value = false
+  if (!isPasswordSame) {
     isFormValid = false
   }
   if (isFormValid) {
-    console.log('TODO: Send registration request')
-    canLogin.value = true
+    sendRegisterRequest()
   }
 }
 
-const sendLoginRequest = () => {
-  if (canLogin.value) {
-    // Send login request
+const sendRegisterRequest = async () => {
+  canOperate.value = false
+  // 加入loading動畫
+  try {
+    const userData = {
+      email: registerEmail.value,
+      password: registerPassword.value,
+      nickname: nickName.value,
+    }
+    await registerUser(userData)
+  } catch (error) {
+    if (error.email) {
+      isEmailCorrect = false
+      emailErrorMsg.value = error.email
+    }
+    if (error.nickname) {
+      nickNameErrorMsg.value = error.nickname
+    }
+    if (error.password) {
+      passwordErrorMsg.value = error.password
+    }
+    if (error.unknown) {
+      console.log('發生未知錯誤:', error.unknown)
+    }
   }
+
+  // 移除loading
+  canOperate.value = true
+
+  // 註冊成功後直接登入
+  console.log('註冊成功，請直接登入')
+}
+
+const gotoLogin = () => {
+  router.push({ name: 'login' })
 }
 </script>
 
@@ -110,9 +164,10 @@ const sendLoginRequest = () => {
       placeholder="請輸入 email"
       required
       v-model="registerEmail"
+      :disabled="!canOperate"
     />
     <p class="formControls_invalid_prompt">
-      {{ isEmailCorrect ? '' : 'Email 格式不正確' }}
+      {{ emailErrorMsg }}
     </p>
     <label class="formControls_label" for="name">您的暱稱</label>
     <input
@@ -122,9 +177,10 @@ const sendLoginRequest = () => {
       id="name"
       placeholder="請輸入您的暱稱"
       v-model="nickName"
+      :disabled="!canOperate"
     />
     <p class="formControls_invalid_prompt">
-      {{ hasEnteredNickName ? '' : '暱稱不可以為空' }}
+      {{ nickNameErrorMsg }}
     </p>
     <label class="formControls_label" for="pwd">密碼</label>
     <input
@@ -135,9 +191,10 @@ const sendLoginRequest = () => {
       placeholder="請輸入密碼"
       required
       v-model="registerPassword"
+      :disabled="!canOperate"
     />
     <p class="formControls_invalid_prompt">
-      {{ hasEnteredPassword ? '' : '密碼不可以為空' }}
+      {{ passwordErrorMsg }}
     </p>
     <label class="formControls_label" for="pwd2">再次輸入密碼</label>
     <input
@@ -148,20 +205,19 @@ const sendLoginRequest = () => {
       placeholder="請再次輸入密碼"
       required
       v-model="confirmPassword"
+      :disabled="!canOperate"
     />
     <p class="formControls_invalid_prompt">
-      {{ isPasswordSame ? '' : '與密碼不符' }}
+      {{ confirmPasswordErrorMsg }}
     </p>
     <input
       class="formControls_btnSubmit"
       type="button"
-      @click="sendRegisterRequest"
+      @click="tryRegister"
       value="註冊帳號"
+      :disabled="!canOperate"
     />
-    <!-- <a class="formControls_btnLink" href="#loginPage">登入</a> -->
-    <button class="formControls_btnLink" :disabled="!canLogin" @click="sendLoginRequest">
-      登入
-    </button>
+    <button class="formControls_btnLink" @click="gotoLogin">登入</button>
   </div>
 </template>
 

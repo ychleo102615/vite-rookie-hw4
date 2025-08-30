@@ -21,7 +21,6 @@ import LoginPanel from '@/components/LoginPanel.vue'
         />
       </div>
       <div>
-        <!-- <LoginPanel></LoginPanel> -->
         <RouterView></RouterView>
       </div>
     </div>
