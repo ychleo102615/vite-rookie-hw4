@@ -2,19 +2,19 @@
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { registerUser } from '@/useCase/registerUseCase'
+import { loginUser } from '@/useCase/loginUseCase'
 
 const router = useRouter()
 
 const registerEmail = ref('')
-const nickName = ref('')
+const registerNickName = ref('')
 const registerPassword = ref('')
 const confirmPassword = ref('')
 
-// 預設狀態不顯示錯誤
-let isEmailCorrect = true
-let hasEnteredNickName = true
-let hasEnteredPassword = true
-let isPasswordSame = true
+let isEmailCorrect = false
+let hasEnteredNickName = false
+let hasEnteredPassword = false
+let isPasswordSame = false
 
 const emailErrorMsg = ref('')
 const nickNameErrorMsg = ref('')
@@ -22,6 +22,9 @@ const passwordErrorMsg = ref('')
 const confirmPasswordErrorMsg = ref('')
 
 const canOperate = ref(true)
+const dialogMessage = ref('')
+
+const dialogRef = ref(null)
 
 const tick = 10
 const threshold = 1000
@@ -50,8 +53,8 @@ watch(registerEmail, () => {
   }
 })
 
-watch(nickName, () => {
-  if (nickName.value === '') {
+watch(registerNickName, () => {
+  if (registerNickName.value === '') {
     hasEnteredNickName = false
     nickNameErrorMsg.value = '暱稱不可以為空'
   } else {
@@ -116,35 +119,52 @@ const tryRegister = () => {
 
 const sendRegisterRequest = async () => {
   canOperate.value = false
-  // 加入loading動畫
-  try {
-    const userData = {
-      email: registerEmail.value,
-      password: registerPassword.value,
-      nickname: nickName.value,
+
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+  console.log('假等待完畢')
+
+  const userData = {
+    email: registerEmail.value,
+    password: registerPassword.value,
+    nickname: registerNickName.value,
+  }
+  const resp = await registerUser(userData)
+
+  if (!resp.success) {
+    if (resp.errorData.email) {
+      emailErrorMsg.value = resp.errorData.email
     }
-    await registerUser(userData)
-  } catch (error) {
-    if (error.email) {
-      isEmailCorrect = false
-      emailErrorMsg.value = error.email
+    if (resp.errorData.nickname) {
+      nickNameErrorMsg.value = resp.errorData.nickname
     }
-    if (error.nickname) {
-      nickNameErrorMsg.value = error.nickname
+    if (resp.errorData.password) {
+      passwordErrorMsg.value = resp.errorData.password
     }
-    if (error.password) {
-      passwordErrorMsg.value = error.password
-    }
-    if (error.unknown) {
-      console.log('發生未知錯誤:', error.unknown)
-    }
+    canOperate.value = true
+    return
   }
 
-  // 移除loading
-  canOperate.value = true
+  // showSuccessDialog.value = true
+  dialogRef.value.showModal()
+  dialogMessage.value = '註冊成功，將自動登入'
 
-  // 註冊成功後直接登入
-  console.log('註冊成功，請直接登入')
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+
+  const response = await loginUser({
+    email: registerEmail.value,
+    password: registerPassword.value,
+  })
+
+  if (response.success) {
+    console.log('自動登入成功', response)
+    // TODO: 跳轉到之後建立的待辦事項頁面
+  } else {
+    canOperate.value = true
+    dialogMessage.value = '自動登入失敗，請重新登入'
+    setTimeout(() => {
+      dialogRef.value.close()
+    }, 1000)
+  }
 }
 
 const gotoLogin = () => {
@@ -153,6 +173,7 @@ const gotoLogin = () => {
 </script>
 
 <template>
+  <dialog ref="dialogRef">{{ dialogMessage }}</dialog>
   <div class="formControls">
     <h2 class="formControls_txt">註冊帳號</h2>
     <label class="formControls_label" for="email">Email</label>
@@ -176,7 +197,7 @@ const gotoLogin = () => {
       name="name"
       id="name"
       placeholder="請輸入您的暱稱"
-      v-model="nickName"
+      v-model="registerNickName"
       :disabled="!canOperate"
     />
     <p class="formControls_invalid_prompt">
@@ -217,7 +238,7 @@ const gotoLogin = () => {
       value="註冊帳號"
       :disabled="!canOperate"
     />
-    <button class="formControls_btnLink" @click="gotoLogin">登入</button>
+    <button class="formControls_btnLink" @click="gotoLogin" :disabled="!canOperate">登入</button>
   </div>
 </template>
 

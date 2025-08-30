@@ -10,7 +10,13 @@ const API_CMD = {
     }
      */
     signIn: `${API_URL}/users/sign_in`,
-    signOout: `${API_URL}/users/sign_out`,
+    /*
+    data: {
+      email: string,
+      password: string,
+    }
+     */
+    signOut: `${API_URL}/users/sign_out`,
   },
   GET: {
     checkOut: `${API_URL}/users/checkout`,

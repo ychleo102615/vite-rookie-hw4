@@ -409,6 +409,56 @@ nav ul a span {
   min-height: 1em;
 }
 
+/* Dialog (native <dialog>) */
+dialog {
+  border: none;
+  border-radius: 10px;
+  padding: 20px 24px;
+  background: #fff;
+  color: #333333;
+  -webkit-box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
+  min-width: 280px;
+  max-width: 90vw;
+  text-align: center;
+  /* border-top: 6px solid #ffd370; brand accent */
+}
+
+dialog[open] {
+  -webkit-animation: dialog-pop 120ms ease-out;
+  animation: dialog-pop 120ms ease-out;
+}
+
+@-webkit-keyframes dialog-pop {
+  from {
+    -webkit-transform: scale(0.96);
+    transform: scale(0.96);
+    opacity: 0;
+  }
+  to {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-pop {
+  from {
+    -webkit-transform: scale(0.96);
+    transform: scale(0.96);
+    opacity: 0;
+  }
+  to {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.35);
+}
+
 .loginPage {
   display: -webkit-box;
   display: -ms-flexbox;

@@ -3,29 +3,32 @@ import { API_CMD } from '@/constants/api'
 
 const registerUser = async (userData) => {
   try {
-    const response = await axios.post(API_CMD.POST.signUp, userData)
-    return response.data
+    await axios.post(API_CMD.POST.signUp, userData)
+    return {
+      success: true,
+    }
   } catch (error) {
+    console.log(error)
+    const message = error.response?.data?.message || '註冊發生未知錯誤'
     const errorData = {}
-    if (error.response) {
-      for (const msg of error.response.data.message) {
-        // errorData[key] = error.response.data.message[key].join(', ')
-        // msg starts with "password"
+    if (Array.isArray(message)) {
+      for (const msg of message) {
         const msgString = String(msg)
         if (msgString.startsWith('password')) {
           errorData.password = msgString
-        } else if (msgString.startsWith('email')) {
-          errorData.email = msgString
         } else if (msgString.startsWith('nickname')) {
           errorData.nickname = msgString
         } else {
-          errorData.unknown = msgString
+          errorData.email = msgString
         }
       }
     } else {
-      errorData.unknown = '未知錯誤'
+      errorData.email = message
     }
-    throw errorData
+    return {
+      success: false,
+      errorData: errorData,
+    }
   }
 }
 
