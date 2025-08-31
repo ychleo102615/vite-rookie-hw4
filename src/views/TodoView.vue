@@ -7,10 +7,14 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-onMounted(() => {
+const datas = ref([])
+
+onMounted(async () => {
   if (!useAuthStore().token) {
     router.push({ name: 'home' })
   }
+  datas.value = await getTodos()
+  console.log(datas.value)
 })
 
 const listName = computed(() => {
@@ -18,7 +22,7 @@ const listName = computed(() => {
   return (auth.nickname || auth.email) + '的代辦'
 })
 
-const datas = ref([
+const fakeDatas = ref([
   {
     id: '1',
     createTime: 1620281234,
@@ -84,17 +88,25 @@ const onTaskStatusChange = (id) => {
   const task = datas.value.find((item) => item.id === id)
   // 時間點晚於v-model
 }
-const addTask = () => {
+const addTask = async () => {
   if (newTask.value.trim()) {
-    datas.value.push({
+    const newTodo = {
       id: Date.now().toString(),
-      createTime: Date.now(),
       content: newTask.value,
       status: false,
-    })
+    }
+    datas.value.push(newTodo)
     newTask.value = ''
-
-    addTodo(newTask.value)
+    console.log('before ', datas.value)
+    const validateTodo = await addTodo(newTodo.content)
+    console.log('validate', validateTodo)
+    if (!validateTodo) {
+      // todo: show some error message to user
+      return
+    }
+    const clientTodoIdx = datas.value.findIndex((item) => item.id === newTodo.id)
+    datas.value.splice(clientTodoIdx, 1, validateTodo)
+    console.log('after ', datas.value)
   }
 }
 
