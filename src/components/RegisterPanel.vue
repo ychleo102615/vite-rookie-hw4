@@ -157,7 +157,7 @@ const sendRegisterRequest = async () => {
 
   if (response.success) {
     console.log('自動登入成功', response)
-    // TODO: 跳轉到之後建立的待辦事項頁面
+    router.push({ name: 'todo' })
   } else {
     canOperate.value = true
     dialogMessage.value = '自動登入失敗，請重新登入'

@@ -1,5 +1,18 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { getTodos, addTodo, updateTodo, toggleTodo, deleteTodo } from '@/useCase/TodoService'
+import { logOut } from '@/useCase/logoutUseCase'
+import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+onMounted(() => {
+  if (!useAuthStore().token) {
+    router.push({ name: 'home' })
+  }
+})
+
 const datas = ref([
   {
     id: '1',
@@ -75,7 +88,14 @@ const addTask = () => {
       status: false,
     })
     newTask.value = ''
+
+    addTodo(newTask.value)
   }
+}
+
+const tryLogOut = () => {
+  logOut()
+  router.push({ name: 'home' })
 }
 </script>
 
@@ -87,7 +107,7 @@ const addTask = () => {
         <li class="todo_sm">
           <a href="#"><span>王小明的代辦</span></a>
         </li>
-        <li><a href="#loginPage">登出</a></li>
+        <li><a href="#" @click.prevent="tryLogOut">登出</a></li>
       </ul>
     </nav>
     <div class="conatiner todoListPage vhContainer">

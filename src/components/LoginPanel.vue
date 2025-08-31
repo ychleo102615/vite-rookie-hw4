@@ -1,15 +1,24 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { loginUser } from '@/useCase/LoginUseCase'
 const userEmail = ref('')
 const userPassword = ref('')
 
-const isEmailEmpty = ref(false)
+const emailErrorMsg = ref('')
 
 const router = useRouter()
 
-const tryLogin = () => {
-  console.log('嘗試登入')
+const tryLogin = async () => {
+  const response = await loginUser({
+    email: userEmail.value,
+    password: userPassword.value,
+  })
+  if (response.success) {
+    router.push({ name: 'todo' })
+  } else {
+    emailErrorMsg.value = response.error
+  }
 }
 
 const gotoRegister = () => {
@@ -17,7 +26,11 @@ const gotoRegister = () => {
 }
 
 watch(userEmail, (newEmail) => {
-  isEmailEmpty.value = newEmail === ''
+  if (newEmail === '') {
+    emailErrorMsg.value = '此欄位不可留空'
+  } else {
+    emailErrorMsg.value = ''
+  }
 })
 </script>
 
@@ -34,7 +47,7 @@ watch(userEmail, (newEmail) => {
       required
       v-model="userEmail"
     />
-    <span> {{ isEmailEmpty ? '此欄位不可留空' : '' }}</span>
+    <span> {{ emailErrorMsg }}</span>
     <label class="formControls_label" for="pwd">密碼</label>
     <input
       class="formControls_input"

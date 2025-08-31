@@ -1,7 +1,12 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
-import LoginPanel from '@/components/LoginPanel.vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+onMounted(() => {
+  router.push({ name: 'login' })
+})
 </script>
 
 <template>

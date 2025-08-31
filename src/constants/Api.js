@@ -1,3 +1,5 @@
+import { getTodos, updateTodo } from '@/useCase/TodoService'
+
 const API_URL = 'https://todolist-api.hexschool.io'
 const API_CMD = {
   POST: {
@@ -16,10 +18,21 @@ const API_CMD = {
       password: string,
     }
      */
-    signOut: `${API_URL}/users/sign_out`,
+    signOut: `/users/sign_out`,
+    addTodo: `${API_URL}/todos`,
   },
   GET: {
     checkOut: `${API_URL}/users/checkout`,
+    getTodos: `${API_URL}/todos`,
+  },
+  PUT: {
+    updateTodo: (id) => `${API_URL}/todos/${id}`,
+  },
+  PATCH: {
+    toggleTodo: (id) => `${API_URL}/todos/${id}/toggle`,
+  },
+  DELETE: {
+    delete: (id) => `${API_URL}/todos/${id}`,
   },
 }
-export { API_CMD }
+export { API_CMD, API_URL }
