@@ -13,6 +13,11 @@ onMounted(() => {
   }
 })
 
+const listName = computed(() => {
+  const auth = useAuthStore()
+  return (auth.nickname || auth.email) + '的代辦'
+})
+
 const datas = ref([
   {
     id: '1',
@@ -105,7 +110,7 @@ const tryLogOut = () => {
       <h1><a href="#">ONLINE TODO LIST</a></h1>
       <ul>
         <li class="todo_sm">
-          <a href="#"><span>王小明的代辦</span></a>
+          <span>{{ listName }}</span>
         </li>
         <li><a href="#" @click.prevent="tryLogOut">登出</a></li>
       </ul>

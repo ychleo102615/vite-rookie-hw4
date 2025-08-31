@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import LoginPanel from '@/components/LoginPanel.vue'
+import LogInPanel from '@/components/LogInPanel.vue'
 import RegisterPanel from '@/components/RegisterPanel.vue'
 
 const router = createRouter({
@@ -24,7 +24,7 @@ const router = createRouter({
         {
           path: '',
           name: 'login',
-          component: LoginPanel,
+          component: LogInPanel,
         },
         {
           path: 'register',

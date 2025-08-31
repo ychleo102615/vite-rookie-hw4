@@ -22,7 +22,7 @@ const logOut = async () => {
   const api = getApi()
   try {
     await api.post(API_CMD.POST.signOut)
-    useAuthStore().clearToken()
+    useAuthStore().clear()
   } catch (error) {
     console.error('Logout failed:', error)
   }

@@ -1,15 +1,16 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { loginUser } from '@/useCase/LoginUseCase'
-const userEmail = ref('')
-const userPassword = ref('')
-
-const emailErrorMsg = ref('')
-
+import { loginUser } from '@/useCase/LogInUseCase'
 const router = useRouter()
 
-const tryLogin = async () => {
+const userEmail = ref('')
+const userPassword = ref('')
+const emailErrorMsg = ref('')
+const canOperate = ref(true)
+
+const tryLogIn = async () => {
+  canOperate.value = false
   const response = await loginUser({
     email: userEmail.value,
     password: userPassword.value,
@@ -18,6 +19,7 @@ const tryLogin = async () => {
     router.push({ name: 'todo' })
   } else {
     emailErrorMsg.value = response.error
+    canOperate.value = true
   }
 }
 
@@ -46,6 +48,7 @@ watch(userEmail, (newEmail) => {
       placeholder="請輸入 email"
       required
       v-model="userEmail"
+      :disabled="!canOperate"
     />
     <span> {{ emailErrorMsg }}</span>
     <label class="formControls_label" for="pwd">密碼</label>
@@ -57,8 +60,11 @@ watch(userEmail, (newEmail) => {
       placeholder="請輸入密碼"
       required
       v-model="userPassword"
+      :disabled="!canOperate"
     />
-    <button class="formControls_btnSubmit" @click="tryLogin">登入</button>
-    <button class="formControls_btnLink" @click="gotoRegister">註冊帳號</button>
+    <button class="formControls_btnSubmit" @click="tryLogIn" :disabled="!canOperate">登入</button>
+    <button class="formControls_btnLink" @click="gotoRegister" :disabled="!canOperate">
+      註冊帳號
+    </button>
   </div>
 </template>

@@ -2,22 +2,22 @@
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { registerUser } from '@/useCase/registerUseCase'
-import { loginUser } from '@/useCase/loginUseCase'
+import { loginUser } from '@/useCase/LogInUseCase'
 
 const router = useRouter()
 
 const registerEmail = ref('')
-const registerNickName = ref('')
+const registerNickname = ref('')
 const registerPassword = ref('')
 const confirmPassword = ref('')
 
 let isEmailCorrect = false
-let hasEnteredNickName = false
+let hasEnteredNickname = false
 let hasEnteredPassword = false
 let isPasswordSame = false
 
 const emailErrorMsg = ref('')
-const nickNameErrorMsg = ref('')
+const nicknameErrorMsg = ref('')
 const passwordErrorMsg = ref('')
 const confirmPasswordErrorMsg = ref('')
 
@@ -53,13 +53,13 @@ watch(registerEmail, () => {
   }
 })
 
-watch(registerNickName, () => {
-  if (registerNickName.value === '') {
-    hasEnteredNickName = false
-    nickNameErrorMsg.value = '暱稱不可以為空'
+watch(registerNickname, () => {
+  if (registerNickname.value === '') {
+    hasEnteredNickname = false
+    nicknameErrorMsg.value = '暱稱不可以為空'
   } else {
-    hasEnteredNickName = true
-    nickNameErrorMsg.value = ''
+    hasEnteredNickname = true
+    nicknameErrorMsg.value = ''
   }
 })
 
@@ -103,7 +103,7 @@ const tryRegister = () => {
   if (!isEmailCorrect) {
     isFormValid = false
   }
-  if (!hasEnteredNickName) {
+  if (!hasEnteredNickname) {
     isFormValid = false
   }
   if (!hasEnteredPassword) {
@@ -120,13 +120,10 @@ const tryRegister = () => {
 const sendRegisterRequest = async () => {
   canOperate.value = false
 
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-  console.log('假等待完畢')
-
   const userData = {
     email: registerEmail.value,
     password: registerPassword.value,
-    nickname: registerNickName.value,
+    nickname: registerNickname.value,
   }
   const resp = await registerUser(userData)
 
@@ -135,7 +132,7 @@ const sendRegisterRequest = async () => {
       emailErrorMsg.value = resp.errorData.email
     }
     if (resp.errorData.nickname) {
-      nickNameErrorMsg.value = resp.errorData.nickname
+      nicknameErrorMsg.value = resp.errorData.nickname
     }
     if (resp.errorData.password) {
       passwordErrorMsg.value = resp.errorData.password
@@ -152,6 +149,7 @@ const sendRegisterRequest = async () => {
 
   const response = await loginUser({
     email: registerEmail.value,
+    nickname: registerNickname.value,
     password: registerPassword.value,
   })
 
@@ -167,7 +165,7 @@ const sendRegisterRequest = async () => {
   }
 }
 
-const gotoLogin = () => {
+const gotoLogIn = () => {
   router.push({ name: 'login' })
 }
 </script>
@@ -197,11 +195,11 @@ const gotoLogin = () => {
       name="name"
       id="name"
       placeholder="請輸入您的暱稱"
-      v-model="registerNickName"
+      v-model="registerNickname"
       :disabled="!canOperate"
     />
     <p class="formControls_invalid_prompt">
-      {{ nickNameErrorMsg }}
+      {{ nicknameErrorMsg }}
     </p>
     <label class="formControls_label" for="pwd">密碼</label>
     <input
@@ -238,7 +236,7 @@ const gotoLogin = () => {
       value="註冊帳號"
       :disabled="!canOperate"
     />
-    <button class="formControls_btnLink" @click="gotoLogin" :disabled="!canOperate">登入</button>
+    <button class="formControls_btnLink" @click="gotoLogIn" :disabled="!canOperate">登入</button>
   </div>
 </template>
 

@@ -23,7 +23,10 @@ const loginUser = async (userData) => {
 
     document.cookie = `${authToken}=${response.data.token}; path=/`
     const auth = useAuthStore()
-    auth.setToken(response.data.token)
+    auth.token = response.data.token
+    auth.email = userData.email
+    auth.nickname = userData.nickname
+
     return {
       success: true,
     }
