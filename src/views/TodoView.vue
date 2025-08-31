@@ -147,7 +147,7 @@ const tryLogOut = () => {
         <div v-else class="todoList_empty">
           <div class="todoList_empty_content">
             <h2>目前沒有待辦事項</h2>
-            <img src="@/assets/empty.png" alt="" />
+            <img src="@/assets/empty.png" alt="edit_empty_bg" draggable="false" />
           </div>
         </div>
       </div>

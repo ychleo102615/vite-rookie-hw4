@@ -13,17 +13,8 @@ onMounted(() => {
   <div id="loginPage" class="bg-yellow">
     <div class="conatiner loginPage vhContainer">
       <div class="side">
-        <a href="#"
-          ><img
-            class="logoImg"
-            src="https://raw.githubusercontent.com/hexschool/2022-web-layout-training/main/todolist/logo.png"
-            alt=""
-        /></a>
-        <img
-          class="d-m-n"
-          src="https://raw.githubusercontent.com/hexschool/2022-web-layout-training/main/todolist/img.png"
-          alt="workImg"
-        />
+        <img class="logoImg" src="@/assets/logo.png" alt="logo" draggable="false" />
+        <img class="d-m-n" src="@/assets/main_visual.png" alt="mainVisual" draggable="false" />
       </div>
       <div>
         <RouterView></RouterView>

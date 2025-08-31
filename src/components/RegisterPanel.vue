@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { registerUser } from '@/useCase/registerUseCase'
+import { registerUser } from '@/useCase/RegisterUseCase'
 import { loginUser } from '@/useCase/LogInUseCase'
 
 const router = useRouter()

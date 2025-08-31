@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { API_CMD } from '@/constants/api'
+import { API_CMD } from '@/constants/Api'
 import { authToken } from '@/constants/Cookie'
 import { useAuthStore } from '@/stores/auth'
 
