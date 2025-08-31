@@ -13,4 +13,8 @@ export const useAuthStore = defineStore('auth', {
       this.nickname = null
     },
   },
+  persist: {
+    key: 'my-auth',
+    paths: ['token', 'email', 'nickname'],
+  },
 })
