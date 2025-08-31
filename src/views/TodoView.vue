@@ -14,52 +14,12 @@ onMounted(async () => {
     router.push({ name: 'home' })
   }
   datas.value = await getTodos()
-  console.log(datas.value)
 })
 
 const listName = computed(() => {
   const auth = useAuthStore()
   return (auth.nickname || auth.email) + '的代辦'
 })
-
-const fakeDatas = ref([
-  {
-    id: '1',
-    createTime: 1620281234,
-    content: '把冰箱發霉的檸檬拿去丟',
-    status: false,
-  },
-  {
-    id: '2',
-    createTime: 1620281234,
-    content: '打電話叫媽媽匯款給我',
-    status: false,
-  },
-  {
-    id: '3',
-    createTime: 1620281234,
-    content: '整理電腦資料夾',
-    status: false,
-  },
-  {
-    id: '4',
-    createTime: 1620281234,
-    content: '繳電費水費瓦斯費',
-    status: false,
-  },
-  {
-    id: '5',
-    createTime: 1620281234,
-    content: '約vicky禮拜三泡溫泉',
-    status: false,
-  },
-  {
-    id: '6',
-    createTime: 1620281234,
-    content: '約ada禮拜四吃晚餐',
-    status: false,
-  },
-])
 
 const STATUS = {
   ALL: 'all',
@@ -83,10 +43,12 @@ const visibleTasks = computed(() => {
 
 const removeTask = (id) => {
   datas.value = datas.value.filter((item) => item.id !== id)
+  deleteTodo(id)
 }
 const onTaskStatusChange = (id) => {
-  const task = datas.value.find((item) => item.id === id)
+  // const task = datas.value.find((item) => item.id === id)
   // 時間點晚於v-model
+  toggleTodo(id)
 }
 const addTask = async () => {
   if (newTask.value.trim()) {
@@ -97,16 +59,14 @@ const addTask = async () => {
     }
     datas.value.push(newTodo)
     newTask.value = ''
-    console.log('before ', datas.value)
     const validateTodo = await addTodo(newTodo.content)
-    console.log('validate', validateTodo)
     if (!validateTodo) {
       // todo: show some error message to user
       return
     }
     const clientTodoIdx = datas.value.findIndex((item) => item.id === newTodo.id)
     datas.value.splice(clientTodoIdx, 1, validateTodo)
-    console.log('after ', datas.value)
+    // todo: 檢查為什麼手動新增和獲取todos時的格式不一樣（proxy）
   }
 }
 

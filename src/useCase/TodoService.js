@@ -21,6 +21,11 @@ const getApi = () => {
   return api
 }
 
+const handleApiError = (error) => {
+  console.log('API 錯誤:', error)
+  // todo: 顯示錯誤訊息給使用者
+}
+
 const getTodos = async () => {
   // return axios.get(API_CMD.GET.getTodos)
   try {
@@ -33,7 +38,7 @@ const getTodos = async () => {
       return []
     }
   } catch (error) {
-    console.log('getTodos error:', error)
+    handleApiError(error)
     return []
   }
 }
@@ -49,16 +54,41 @@ const addTodo = async (content) => {
     }
   } catch (error) {
     // todo: 處理api錯誤
+    handleApiError(error)
   }
 }
-const updateTodo = (id, content) => {
-  return axios.put(API_CMD.PUT.updateTodo(id), { content })
+const updateTodo = async (id, content) => {
+  try {
+    const resp = await getApi().put(`/todos/${id}`, {
+      content: content,
+    })
+    if (!resp.data.status) {
+      // todo: 處理server回覆錯誤
+    }
+  } catch (error) {
+    handleApiError(error)
+  }
 }
-const toggleTodo = (id) => {
-  return axios.patch(API_CMD.PATCH.toggleTodo(id))
+const toggleTodo = async (id) => {
+  try {
+    const resp = await getApi().patch(`/todos/${id}/toggle`)
+    if (!resp.data.status) {
+      // todo: 處理server回覆錯誤
+    }
+  } catch (error) {
+    handleApiError(error)
+  }
 }
-const deleteTodo = (id) => {
-  return axios.delete(API_CMD.DELETE.delete(id))
+const deleteTodo = async (id) => {
+  try {
+    const resp = await getApi().delete(`/todos/${id}`)
+    if (!resp.data.status) {
+      console.log('刪除失敗', resp.data)
+      // todo: 處理server回覆錯誤
+    }
+  } catch (error) {
+    handleApiError(error)
+  }
 }
 
 export { getTodos, addTodo, updateTodo, toggleTodo, deleteTodo }
