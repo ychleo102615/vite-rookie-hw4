@@ -46,6 +46,8 @@ const STATUS = {
 }
 const curStatus = ref(STATUS.ALL)
 
+const newTask = ref('')
+
 const visibleTasks = computed(() => {
   switch (curStatus.value) {
     case STATUS.UNFINISHED:
@@ -64,6 +66,17 @@ const onTaskStatusChange = (id) => {
   const task = datas.value.find((item) => item.id === id)
   // 時間點晚於v-model
 }
+const addTask = () => {
+  if (newTask.value.trim()) {
+    datas.value.push({
+      id: Date.now().toString(),
+      createTime: Date.now(),
+      content: newTask.value,
+      status: false,
+    })
+    newTask.value = ''
+  }
+}
 </script>
 
 <template>
@@ -80,12 +93,17 @@ const onTaskStatusChange = (id) => {
     <div class="conatiner todoListPage vhContainer">
       <div class="todoList_Content">
         <div class="inputBox">
-          <input type="text" placeholder="請輸入待辦事項" />
-          <a href="#">
+          <input
+            type="text"
+            placeholder="請輸入待辦事項"
+            v-model="newTask"
+            @keyup.enter="addTask"
+          />
+          <button @click.prevent="addTask">
             <i class="fa fa-plus"></i>
-          </a>
+          </button>
         </div>
-        <div class="todoList_list">
+        <div class="todoList_list" v-if="datas.length">
           <ul class="todoList_tab">
             <li>
               <a @click="curStatus = STATUS.ALL" :class="{ active: curStatus === STATUS.ALL }"
@@ -118,13 +136,21 @@ const onTaskStatusChange = (id) => {
                     @change="onTaskStatusChange(item.id)"
                   />
                   <span>{{ item.content }}</span>
+                  <button @click="removeTask(item.id)" class="todoList_close">
+                    <i class="fa fa-times"></i>
+                  </button>
                 </label>
-                <button @click="removeTask(item.id)" class="fa fa-times todoList_close"></button>
               </li>
             </ul>
             <div class="todoList_statistics">
               <p>{{ datas.filter((item) => item.status).length }} 個已完成項目</p>
             </div>
+          </div>
+        </div>
+        <div v-else class="todoList_empty">
+          <div class="todoList_empty_content">
+            <h2>目前沒有待辦事項</h2>
+            <img src="@/assets/empty.png" alt="" />
           </div>
         </div>
       </div>

@@ -571,11 +571,48 @@ dialog::backdrop {
   padding: 10px;
 }
 
+.inputBox button {
+  display: grid;
+  width: 40px;
+  height: 39px;
+  position: absolute;
+  background: #333333;
+  color: white;
+  font-size: 20px;
+  border-radius: 10px;
+  top: 4px;
+  right: 4px;
+  place-items: center;
+  line-height: 1;
+  padding: 0;
+}
+
 .todoList_list {
   background: #fff;
   border-radius: 10px;
   -webkit-box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.15);
+}
+
+.todoList_empty {
+  display: grid;
+  place-items: center;
+  height: 80vh;
+  text-align: center;
+  font-size: x-large;
+  padding: 32px 0;
+}
+
+.todoList_empty .todoList_empty_content {
+  width: 50%;
+  height: 50%;
+}
+
+.todoList_empty .img,
+.todoList_empty h2 {
+  width: 100%;
+  height: auto;
+  margin-bottom: 20px;
 }
 
 .todoList_list .todoList_tab {
@@ -669,14 +706,17 @@ dialog::backdrop {
   opacity: 1;
 }
 
-.todoList_list .todoList_close {
+.todoList_list .todoList_items .todoList_label .todoList_close {
   color: #9f9a91;
   font-size: 0.875rem;
-  text-decoration: none;
   background: none;
   border: none;
   cursor: pointer;
   opacity: 0;
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  line-height: 1;
 }
 
 .todoList_list .todoList_items li:hover .todoList_close {
