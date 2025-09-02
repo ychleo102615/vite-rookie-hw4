@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { API_CMD } from '@/constants/api'
+import { API_CMD } from '@/constants/url'
 import { useAuthStore } from '@/stores/auth'
-import { API_URL } from '@/constants/api'
+import { API_URL } from '@/constants/url'
 
 const getApi = () => {
   const api = axios.create({

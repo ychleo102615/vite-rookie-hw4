@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { getTodos, addTodo, updateTodo, toggleTodo, deleteTodo } from '@/useCase/TodoService'
-import { logOut } from '@/useCase/logoutUseCase'
+import { getTodos, addTodo, updateTodo, toggleTodo, deleteTodo } from '@/useCase/todoService'
+import { logOut } from '@/useCase/auth/logOutUseCase'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 
@@ -139,7 +139,7 @@ const tryLogOut = () => {
                 </label>
               </li>
             </ul>
-            <div class="todoList_statistics">
+            <div class="todoList_statistics" v-if="curStatus === STATUS.ALL">
               <p>{{ datas.filter((item) => item.status).length }} 個已完成項目</p>
             </div>
           </div>

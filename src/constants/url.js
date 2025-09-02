@@ -1,4 +1,4 @@
-import { getTodos, updateTodo } from '@/useCase/TodoService'
+import { getTodos, updateTodo } from '@/useCase/todoService'
 
 const API_URL = 'https://todolist-api.hexschool.io'
 const API_CMD = {

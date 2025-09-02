@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { API_CMD } from '@/constants/api'
+import { API_CMD } from '@/constants/url'
 
 const registerUser = async (userData) => {
   try {

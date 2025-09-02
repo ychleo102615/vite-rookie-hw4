@@ -1,6 +1,5 @@
 import axios from 'axios'
-import { API_CMD } from '@/constants/Api'
-import { authToken } from '@/constants/Cookie'
+import { API_CMD } from '@/constants/url'
 import { useAuthStore } from '@/stores/auth'
 
 const loginUser = async (userData) => {
@@ -21,7 +20,6 @@ const loginUser = async (userData) => {
     }
     console.log('登入成功', response)
 
-    document.cookie = `${authToken}=${response.data.token}; path=/`
     const auth = useAuthStore()
     auth.token = response.data.token
     auth.email = userData.email

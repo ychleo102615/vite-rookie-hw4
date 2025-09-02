@@ -2,15 +2,22 @@
 import { onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
+import { authTokenCheck } from '@/useCase/auth/authTokenUseCase'
 
 const router = useRouter()
 
 onMounted(async () => {
   await new Promise((resolve) => setTimeout(resolve, 1000))
-  // 這裡可以放置需要在組件掛載時執行的邏輯
   if (useAuthStore().token !== null) {
-    router.push({ name: 'todo' })
+    const isValid = await authTokenCheck()
+    if (isValid) {
+      router.push({ name: 'todo' })
+    } else {
+      useAuthStore().clear()
+      router.push({ name: 'auth' })
+    }
   } else {
+    useAuthStore().clear()
     router.push({ name: 'auth' })
   }
 })
