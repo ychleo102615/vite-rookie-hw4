@@ -1,9 +1,8 @@
-import axios from 'axios'
-import { API_CMD } from '@/constants/url'
+import { axiosApi, routes } from '@/http/api'
 
 const registerUser = async (userData) => {
   try {
-    await axios.post(API_CMD.POST.signUp, userData)
+    await axiosApi().post(routes.auth.register(), userData)
     return {
       success: true,
     }

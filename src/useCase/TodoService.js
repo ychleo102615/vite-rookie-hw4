@@ -1,25 +1,5 @@
-import axios from 'axios'
-import { API_CMD } from '@/constants/url'
 import { useAuthStore } from '@/stores/auth'
-import { API_URL } from '@/constants/url'
-
-const getApi = () => {
-  const api = axios.create({
-    baseURL: API_URL, // 你的 API 基底路徑
-  })
-  if (!useAuthStore().token) {
-    throw new Error('未登入')
-  }
-  api.interceptors.request.use((config) => {
-    const auth = useAuthStore()
-    if (auth.token) {
-      config.headers = config.headers || {}
-      config.headers.Authorization = `${auth.token}`
-    }
-    return config
-  })
-  return api
-}
+import { axiosApi, routes } from '@/http/api'
 
 const handleApiError = (error) => {
   console.log('API 錯誤:', error)
@@ -27,10 +7,8 @@ const handleApiError = (error) => {
 }
 
 const getTodos = async () => {
-  // return axios.get(API_CMD.GET.getTodos)
   try {
-    const resp = await getApi().get('/todos')
-    console.log(resp.data)
+    const resp = await axiosApi(useAuthStore().token).get(routes.todos.todoList())
     if (resp.data.status) {
       return resp.data.data
     } else {
@@ -44,7 +22,7 @@ const getTodos = async () => {
 }
 const addTodo = async (content) => {
   try {
-    const resp = await getApi().post('/todos', {
+    const resp = await axiosApi(useAuthStore().token).post(routes.todos.newTodo(), {
       content: content,
     })
     if (resp.data.status) {
@@ -59,7 +37,7 @@ const addTodo = async (content) => {
 }
 const updateTodo = async (id, content) => {
   try {
-    const resp = await getApi().put(`/todos/${id}`, {
+    const resp = await axiosApi(useAuthStore().token).put(routes.todos.editContent(id), {
       content: content,
     })
     if (!resp.data.status) {
@@ -71,7 +49,7 @@ const updateTodo = async (id, content) => {
 }
 const toggleTodo = async (id) => {
   try {
-    const resp = await getApi().patch(`/todos/${id}/toggle`)
+    const resp = await axiosApi(useAuthStore().token).patch(routes.todos.toggle(id))
     if (!resp.data.status) {
       // todo: 處理server回覆錯誤
     }
@@ -81,7 +59,7 @@ const toggleTodo = async (id) => {
 }
 const deleteTodo = async (id) => {
   try {
-    const resp = await getApi().delete(`/todos/${id}`)
+    const resp = await axiosApi(useAuthStore().token).delete(routes.todos.removeTodo(id))
     if (!resp.data.status) {
       console.log('刪除失敗', resp.data)
       // todo: 處理server回覆錯誤

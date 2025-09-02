@@ -1,11 +1,9 @@
-import axios from 'axios'
-import { API_CMD } from '@/constants/url'
 import { useAuthStore } from '@/stores/auth'
+import { axiosApi, routes } from '@/http/api'
 
 const loginUser = async (userData) => {
   try {
-    console.log('userData', userData)
-    const response = await axios.post(API_CMD.POST.signIn, userData)
+    const response = await axiosApi().post(routes.auth.login(), userData)
     if (!response.data.token) {
       return {
         success: false,
@@ -24,6 +22,8 @@ const loginUser = async (userData) => {
     auth.token = response.data.token
     auth.email = userData.email
     auth.nickname = userData.nickname
+    console.log(auth, '寫入token')
+    console.log('檢查', useAuthStore().token)
 
     return {
       success: true,

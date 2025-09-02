@@ -11,6 +11,7 @@ export const useAuthStore = defineStore('auth', {
       this.token = null
       this.email = null
       this.nickname = null
+      console.log('清除 auth store')
     },
   },
   persist: {

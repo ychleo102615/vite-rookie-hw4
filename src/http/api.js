@@ -1,7 +1,7 @@
 import { API_URL } from '@/constants/url'
 import axios from 'axios'
 
-const getApi = (token) => {
+const axiosApi = (token) => {
   const api = axios.create({
     baseURL: API_URL, // 你的 API 基底路徑
   })
@@ -17,10 +17,10 @@ const getApi = (token) => {
 
 const routes = {
   todos: {
-    get: (id) => `/todos/${id}`,
-    create: () => `/todos`,
-    update: (id) => `/todos/${id}`,
-    delete: (id) => `/todos/${id}`,
+    todoList: () => `/todos/`,
+    newTodo: () => `/todos`,
+    editContent: (id) => `/todos/${id}`,
+    removeTodo: (id) => `/todos/${id}`,
     toggle: (id) => `/todos/${id}/toggle`,
   },
   auth: {
@@ -31,4 +31,4 @@ const routes = {
   },
 }
 
-export { getApi, routes }
+export { axiosApi, routes }

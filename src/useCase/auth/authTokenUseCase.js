@@ -1,4 +1,4 @@
-import { getApi, routes } from '@/http/api'
+import { axiosApi, routes } from '@/http/api'
 import { useAuthStore } from '@/stores/auth'
 
 const authTokenCheck = async () => {
@@ -8,8 +8,8 @@ const authTokenCheck = async () => {
     return false
   }
   try {
-    const response = await getApi(token).get(routes.auth.authToken())
-    return response.data.success
+    const response = await axiosApi(token).get(routes.auth.authToken())
+    return response.data.status
   } catch (error) {
     console.error('Auth token check failed:', error)
     return false
