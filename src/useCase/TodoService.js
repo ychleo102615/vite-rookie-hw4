@@ -1,4 +1,5 @@
 import { useAuthStore } from '@/stores/auth'
+import { useTodoStore } from '@/stores/todos'
 import { axiosApi, routes } from '@/http/api'
 
 const handleApiError = (error) => {
@@ -6,23 +7,22 @@ const handleApiError = (error) => {
   // todo: 顯示錯誤訊息給使用者
 }
 
-const getTodos = async () => {
+const loadTodos = async () => {
   try {
-    const resp = await axiosApi(useAuthStore().token).get(routes.todos.todoList())
+    const resp = await axiosApi(useAuthStore().token).get(routes.todos.fetchTodos())
     if (resp.data.status) {
-      return resp.data.data
+      // return resp.data.data
+      useTodoStore().todos = resp.data.data
     } else {
-      console.log('getTodos: resp.status false')
-      return []
+      // todo: 處理server回覆錯誤
     }
   } catch (error) {
     handleApiError(error)
-    return []
   }
 }
 const addTodo = async (content) => {
   try {
-    const resp = await axiosApi(useAuthStore().token).post(routes.todos.newTodo(), {
+    const resp = await axiosApi(useAuthStore().token).post(routes.todos.createTodo(), {
       content: content,
     })
     if (resp.data.status) {
@@ -47,7 +47,7 @@ const updateTodo = async (id, content) => {
     handleApiError(error)
   }
 }
-const toggleTodo = async (id) => {
+const toggleTodoStatus = async (id) => {
   try {
     const resp = await axiosApi(useAuthStore().token).patch(routes.todos.toggle(id))
     if (!resp.data.status) {
@@ -57,9 +57,9 @@ const toggleTodo = async (id) => {
     handleApiError(error)
   }
 }
-const deleteTodo = async (id) => {
+const removeTodo = async (id) => {
   try {
-    const resp = await axiosApi(useAuthStore().token).delete(routes.todos.removeTodo(id))
+    const resp = await axiosApi(useAuthStore().token).delete(routes.todos.deleteTodo(id))
     if (!resp.data.status) {
       console.log('刪除失敗', resp.data)
       // todo: 處理server回覆錯誤
@@ -69,4 +69,4 @@ const deleteTodo = async (id) => {
   }
 }
 
-export { getTodos, addTodo, updateTodo, toggleTodo, deleteTodo }
+export { loadTodos, addTodo, updateTodo, toggleTodoStatus, removeTodo }

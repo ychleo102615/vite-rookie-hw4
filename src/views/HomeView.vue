@@ -13,11 +13,11 @@ onMounted(async () => {
     if (isValid) {
       router.push({ name: 'todo' })
     } else {
-      useAuthStore().clear()
+      useAuthStore().$reset()
       router.push({ name: 'auth' })
     }
   } else {
-    useAuthStore().clear()
+    useAuthStore().$reset()
     router.push({ name: 'auth' })
   }
 })

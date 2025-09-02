@@ -17,10 +17,10 @@ const axiosApi = (token) => {
 
 const routes = {
   todos: {
-    todoList: () => `/todos/`,
-    newTodo: () => `/todos`,
+    fetchTodos: () => `/todos/`,
+    createTodo: () => `/todos`,
     editContent: (id) => `/todos/${id}`,
-    removeTodo: (id) => `/todos/${id}`,
+    deleteTodo: (id) => `/todos/${id}`,
     toggle: (id) => `/todos/${id}/toggle`,
   },
   auth: {

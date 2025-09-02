@@ -6,14 +6,7 @@ export const useAuthStore = defineStore('auth', {
     email: null,
     nickname: null,
   }),
-  actions: {
-    clear() {
-      this.token = null
-      this.email = null
-      this.nickname = null
-      console.log('清除 auth store')
-    },
-  },
+  actions: {},
   persist: {
     key: 'my-auth',
     paths: ['token', 'email', 'nickname'],

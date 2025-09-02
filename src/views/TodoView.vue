@@ -1,19 +1,22 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { getTodos, addTodo, updateTodo, toggleTodo, deleteTodo } from '@/useCase/todoService'
+import { storeToRefs } from 'pinia'
+import { loadTodos, addTodo, updateTodo, toggleTodoStatus, removeTodo } from '@/useCase/todoService'
 import { logOut } from '@/useCase/auth/logOutUseCase'
 import { useAuthStore } from '@/stores/auth'
+import { useTodoStore } from '@/stores/todos'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const datas = ref([])
+const todoStore = useTodoStore()
+const { todos } = storeToRefs(todoStore)
 
 onMounted(async () => {
   if (!useAuthStore().token) {
     router.push({ name: 'home' })
   }
-  datas.value = await getTodos()
+  await loadTodos()
 })
 
 const listName = computed(() => {
@@ -33,22 +36,22 @@ const newTask = ref('')
 const visibleTasks = computed(() => {
   switch (curStatus.value) {
     case STATUS.UNFINISHED:
-      return datas.value.filter((item) => !item.status)
+      return todos.value.filter((item) => !item.status)
     case STATUS.FINISHED:
-      return datas.value.filter((item) => item.status)
+      return todos.value.filter((item) => item.status)
     default:
-      return datas.value
+      return todos.value
   }
 })
 
 const removeTask = (id) => {
-  datas.value = datas.value.filter((item) => item.id !== id)
-  deleteTodo(id)
+  todos.value = todos.value.filter((item) => item.id !== id)
+  removeTodo(id)
 }
 const onTaskStatusChange = (id) => {
   // const task = datas.value.find((item) => item.id === id)
   // 時間點晚於v-model
-  toggleTodo(id)
+  toggleTodoStatus(id)
 }
 const addTask = async () => {
   if (newTask.value.trim()) {
@@ -57,15 +60,15 @@ const addTask = async () => {
       content: newTask.value,
       status: false,
     }
-    datas.value.push(newTodo)
+    todos.value.push(newTodo)
     newTask.value = ''
     const validateTodo = await addTodo(newTodo.content)
     if (!validateTodo) {
       // todo: show some error message to user
       return
     }
-    const clientTodoIdx = datas.value.findIndex((item) => item.id === newTodo.id)
-    datas.value.splice(clientTodoIdx, 1, validateTodo)
+    const clientTodoIdx = todos.value.findIndex((item) => item.id === newTodo.id)
+    todos.value.splice(clientTodoIdx, 1, validateTodo)
     // todo: 檢查為什麼手動新增和獲取todos時的格式不一樣（proxy）
   }
 }
@@ -100,7 +103,7 @@ const tryLogOut = () => {
             <i class="fa fa-plus"></i>
           </button>
         </div>
-        <div class="todoList_list" v-if="datas.length">
+        <div class="todoList_list" v-if="todos.length">
           <ul class="todoList_tab">
             <li>
               <a @click="curStatus = STATUS.ALL" :class="{ active: curStatus === STATUS.ALL }"
@@ -140,7 +143,7 @@ const tryLogOut = () => {
               </li>
             </ul>
             <div class="todoList_statistics" v-if="curStatus === STATUS.ALL">
-              <p>{{ datas.filter((item) => item.status).length }} 個已完成項目</p>
+              <p>{{ todos.filter((item) => item.status).length }} 個已完成項目</p>
             </div>
           </div>
         </div>
