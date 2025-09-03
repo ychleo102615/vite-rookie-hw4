@@ -143,7 +143,7 @@ const tryLogOut = () => {
               </li>
             </ul>
             <div class="todoList_statistics" v-if="curStatus === STATUS.ALL">
-              <p>{{ todos.filter((item) => item.status).length }} 個已完成項目</p>
+              <p>{{ todos.filter((item) => !item.status).length }} 個待完成項目</p>
             </div>
           </div>
         </div>
