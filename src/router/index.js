@@ -33,6 +33,10 @@ const router = createRouter({
       name: 'todo',
       component: () => import('../views/TodoView.vue'),
     },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/',
+    },
   ],
 })
 
