@@ -154,7 +154,6 @@ const sendRegisterRequest = async () => {
   })
 
   if (response.success) {
-    console.log('自動登入成功', response)
     router.push({ name: 'todo' })
   } else {
     canOperate.value = true

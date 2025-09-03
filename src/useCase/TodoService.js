@@ -3,8 +3,7 @@ import { useTodoStore } from '@/stores/todos'
 import { axiosApi, routes } from '@/http/api'
 
 const handleApiError = (error) => {
-  console.log('API 錯誤:', error)
-  // todo: 顯示錯誤訊息給使用者
+  console.error('API 錯誤:', error)
 }
 
 const loadTodos = async () => {
@@ -61,8 +60,7 @@ const removeTodo = async (id) => {
   try {
     const resp = await axiosApi(useAuthStore().token).delete(routes.todos.deleteTodo(id))
     if (!resp.data.status) {
-      console.log('刪除失敗', resp.data)
-      // todo: 處理server回覆錯誤
+      console.error('刪除失敗', resp.data)
     }
   } catch (error) {
     handleApiError(error)

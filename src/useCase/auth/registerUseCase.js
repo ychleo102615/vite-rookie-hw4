@@ -7,7 +7,6 @@ const registerUser = async (userData) => {
       success: true,
     }
   } catch (error) {
-    console.log(error)
     const message = error.response?.data?.message || '註冊發生未知錯誤'
     const errorData = {}
     if (Array.isArray(message)) {
