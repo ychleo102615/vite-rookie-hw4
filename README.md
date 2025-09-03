@@ -1,35 +1,13 @@
-# hw4-todolist
+# 最終挑戰 - Todolist API
 
-This template should help get you started developing with Vue 3 in Vite.
+## router 架構
 
-## Recommended IDE Setup
+1. `/`：歡迎畫面。初次使用判斷沒有token時則不會出現，直接跳轉認證畫面。有儲存token時，等待驗證之後進入待辦清單畫面。
+1. `/auth`：認證畫面，有巢狀子router，分成`login`和`register`，透過按鈕切換。註冊或是登入成功時，進入待辦清單畫面。
+1. `/todo`：操作待辦清單的畫面。登出會清除資料（使用者、待辦清單），並回到歡迎畫面。點擊標題也回到歡迎畫面但不清除資料。
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 功能特色
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+1. 透過API實踐管理使用者、操作待辦清單的功能。
+1. 註冊、登入出現問題時（如重複帳號註冊），於輸入框下顯示紅字提醒。
+1. 透過`pinia`本地儲存token和待辦清單，無需每次都與server要待辦清單資料。
