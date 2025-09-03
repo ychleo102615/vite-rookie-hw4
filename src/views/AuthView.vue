@@ -10,7 +10,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="loginPage" class="bg-yellow">
+  <div class="bg-yellow">
     <div class="conatiner loginPage vhContainer">
       <div class="side">
         <img class="logoImg" src="@/assets/logo.png" alt="logo" draggable="false" />
