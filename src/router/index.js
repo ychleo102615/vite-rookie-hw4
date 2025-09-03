@@ -16,11 +16,6 @@ const router = createRouter({
       name: 'auth',
       component: () => import('../views/AuthView.vue'),
       children: [
-        // {
-        //   path: '',
-        //   name: 'auth-redirect',
-        //   redirect: { name: 'login' },
-        // },
         {
           path: '',
           name: 'login',
@@ -38,11 +33,6 @@ const router = createRouter({
       name: 'todo',
       component: () => import('../views/TodoView.vue'),
     },
-    // {
-    //   path: '/about',
-    //   name: 'about',
-    //   component: () => import('../views/AboutView.vue'),
-    // },
   ],
 })
 
