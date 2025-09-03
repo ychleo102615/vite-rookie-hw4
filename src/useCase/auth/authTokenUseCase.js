@@ -9,6 +9,7 @@ const authTokenCheck = async () => {
   }
   try {
     const response = await axiosApi(token).get(routes.auth.authToken())
+    authStore.nickname = response.data.nickname
     return response.data.status
   } catch (error) {
     console.error('Auth token check failed:', error)
